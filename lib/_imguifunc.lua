@@ -1,5 +1,5 @@
 local imgui = require 'mimgui'
-local MoonCore = require "ubplibs.MoonCore"
+local MoonCore = require "MoonCore"
 
 local encoding = require('encoding')
 encoding.default = 'CP1251'

@@ -1,6 +1,6 @@
 local imgui = require 'mimgui'
 local json = require "jbp"
-local MoonCore = require "ubplibs.MoonCore"
+local MoonCore = require "MoonCore"
 local faicons = require('fAwesome6')
 local vk = require('vkeys')
 local encoding = require('encoding')

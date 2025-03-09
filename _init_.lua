@@ -1,4 +1,4 @@
-local MoonCore = require "ubplibs.MoonCore" 
+local MoonCore = require "MoonCore" 
 local _main = require "SampAutoClicker.lib._main" 
 local _imguifunc = require "SampAutoClicker.lib._imguifunc"  
 local _gui = _imguifunc:new()

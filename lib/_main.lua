@@ -1,4 +1,4 @@
-local MoonCore = require "ubplibs.MoonCore" 
+local MoonCore = require "MoonCore" 
 local vk = require('vkeys')
 local main = MoonCore.class("main", {
     extends = MoonCore.BaseClass,
