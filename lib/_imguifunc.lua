@@ -422,7 +422,7 @@ local imguiHandler = MoonCore.class("imguiHandler", {
             
             --   
             imgui.SetCursorPosX(20)
-            imgui.TextColored(self.colors.text, u8"Кнопка для клика:")
+            imgui.TextColored(self.colors.text, u8"Количество кликов:")
             imgui.SetCursorPosX(20)
             imgui.PushItemWidth(windowWidth - 40)
             
