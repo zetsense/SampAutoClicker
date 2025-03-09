@@ -1,5 +1,5 @@
 local MoonCore = require "ubplibs.MoonCore" 
-
+local vk = require('vkeys')
 local main = MoonCore.class("main", {
     extends = MoonCore.BaseClass,
     public = {
@@ -11,7 +11,10 @@ local main = MoonCore.class("main", {
         initialize = function(self)
             lua_thread.create(function()
                 while self.isRunning do
-                    self.dependencies.render:render()
+                    while not isSampAvailable() or not sampIsLocalPlayerSpawned() do wait(0) end
+                    if isKeyJustPressed(vk.VK_END) then
+                        self.dependencies.render:OpenMenu()
+                    end
                     wait(0)
                 end
             end)

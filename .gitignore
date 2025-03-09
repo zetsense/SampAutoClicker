@@ -25,6 +25,10 @@ luac.out
 *.def
 *.exp
 
+# Storage
+storage/
+*.json
+
 # Shared objects (inc. Windows DLLs)
 *.dll
 *.so

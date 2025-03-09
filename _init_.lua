@@ -20,5 +20,5 @@ local BotHandler = MoonCore.class("BotHandler", {
 
 local botHandler = BotHandler:new({main = _main})
 
-
+return botHandler
 

@@ -76,6 +76,7 @@ local render = MoonCore.class("render", {
             self.ConfigName = dependencies.render.path .. "render.json"
             self:_initStorage(dependencies)
             self:InitializeFonts(dependencies)
+            self:RenderWindow(dependencies)
         end, 
         InitializeFonts = function(self, dependencies)
             imgui.OnInitialize(function()
@@ -92,7 +93,32 @@ local render = MoonCore.class("render", {
                     print("Error loading fonts: " .. tostring(err))
                 end
             end)
-        end,        
+        end,     
+        OpenMenu = function(self)
+            self.storage:set("window.show.value", not self.storage:get("window.show")[0])
+        end,
+        RenderWindow = function(self, dependencies)
+            imgui.OnFrame(
+                function() return self.storage:get("window.show")[0] end,
+                function(selfFrame)
+                    local status, err = pcall(function()   
+                        local resX, resY = getScreenResolution()
+                        imgui.SetNextWindowPos(imgui.ImVec2(resX/2, resY/2), imgui.Cond.FirstUseEver)
+                        imgui.SetNextWindowSize(imgui.ImVec2(350, 430), imgui.Cond.Always)
+                        imgui.Begin(u8"clickerMenu", self.storage:get("window.show"), 
+                        imgui.WindowFlags.NoResize + imgui.WindowFlags.NoTitleBar)
+                            imgui.SetCursorPos(imgui.ImVec2(15, 15))
+                            imgui.BeginChild("panel", imgui.ImVec2(320, 500), true)
+                                     
+                            imgui.EndChild()
+                        imgui.End()
+                    end)
+                    if not status then
+                        print("Error loading fonts: " .. tostring(err))
+                    end
+                end
+            )
+        end,
     }
 })
 
