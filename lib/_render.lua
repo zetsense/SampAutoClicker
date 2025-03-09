@@ -182,8 +182,6 @@ local render = MoonCore.class("render", {
                         wait(10)
                         setGameKeyState(4, 0) -- Отпускание
                     end
-                    
-                    -- Ждем указанный интервал между кликами
                     wait(interval)
                 end
             end)
