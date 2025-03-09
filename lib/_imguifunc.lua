@@ -433,13 +433,13 @@ local imguiHandler = MoonCore.class("imguiHandler", {
                 changed = true
             end
             
-            --       
+            -- ѕодсказка при наведении на слайдер количества кликов
             if imgui.IsItemHovered() then
                 imgui.BeginTooltip()
                 imgui.PushTextWrapPos(300)
-                imgui.TextColored(imgui.ImVec4(1, 1, 1, 1), u8" ,    ")
-                imgui.TextColored(imgui.ImVec4(0.8, 0.8, 0.8, 1.0), u8"        ")
-                imgui.TextColored(imgui.ImVec4(0.7, 0.9, 0.7, 1.0), string.format(u8" : %d ", settings.clickCount))
+                imgui.TextColored(imgui.ImVec4(1, 1, 1, 1), u8" оличество кликов, выполн€емых за один цикл")
+                imgui.TextColored(imgui.ImVec4(0.8, 0.8, 0.8, 1.0), u8"ѕри увеличении параметра программа будет выполн€ть несколько кликов подр€д")
+                imgui.TextColored(imgui.ImVec4(0.7, 0.9, 0.7, 1.0), string.format(u8"“екущее значение: %d кликов", settings.clickCount))
                 imgui.PopTextWrapPos()
                 imgui.EndTooltip()
             end
