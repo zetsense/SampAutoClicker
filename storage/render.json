@@ -2,12 +2,25 @@
   "window":{
     "show":{
       "__type":"bool",
-      "value":false
+      "value":true
     },
     "clickerSettings":{
-      "clickButton":0,
-      "clickInterval":20,
-      "clickMainInterval":100
+      "isActivated":{
+        "__type":"bool",
+        "value":false
+      },
+      "isClicking":{
+        "__type":"bool",
+        "value":false
+      },
+      "clickButton":1,
+      "clickCount":8,
+      "clickInterval":1000,
+      "clickIntervalUnitIndex":0,
+      "clickMainInterval":900000,
+      "currentTime":0,
+      "timeUnitIndex":2,
+      "timerEndTime":0
     }
   }
 }

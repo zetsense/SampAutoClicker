@@ -2,8 +2,8 @@ local imgui = require 'mimgui'
 local json = require "jbp"
 local MoonCore = require "ubplibs.MoonCore"
 local faicons = require('fAwesome6')
-local encoding = require('encoding')
 local vk = require('vkeys')
+local encoding = require('encoding')
 encoding.default = 'CP1251'
 local u8 = encoding.UTF8
 
@@ -19,9 +19,16 @@ local render = MoonCore.class("render", {
                 window = {
                     show = imgui.new.bool(false),
                     clickerSettings = {
+                        isClicking = imgui.new.bool(false),
+                        isActivated = imgui.new.bool(false),
                         clickMainInterval = 100,
                         clickInterval = 20,
                         clickButton = 0,
+                        clickCount = 5,
+                        currentTime = 0,
+                        timerEndTime = 0,
+                        timeUnitIndex = 0,
+                        clickIntervalUnitIndex = 0
                     }
                 }
             }
@@ -77,6 +84,13 @@ local render = MoonCore.class("render", {
             self:_initStorage(dependencies)
             self:InitializeFonts(dependencies)
             self:RenderWindow(dependencies)
+            
+            self.timerID = lua_thread.create(function()
+                while true do
+                    wait(50)
+                    self:_updateClickerTimer()
+                end
+            end)
         end, 
         InitializeFonts = function(self, dependencies)
             imgui.OnInitialize(function()
@@ -104,12 +118,15 @@ local render = MoonCore.class("render", {
                     local status, err = pcall(function()   
                         local resX, resY = getScreenResolution()
                         imgui.SetNextWindowPos(imgui.ImVec2(resX/2, resY/2), imgui.Cond.FirstUseEver)
-                        imgui.SetNextWindowSize(imgui.ImVec2(350, 430), imgui.Cond.Always)
+                        imgui.SetNextWindowSize(imgui.ImVec2(350, 550), imgui.Cond.Always)
                         imgui.Begin(u8"clickerMenu", self.storage:get("window.show"), 
                         imgui.WindowFlags.NoResize + imgui.WindowFlags.NoTitleBar)
                             imgui.SetCursorPos(imgui.ImVec2(15, 15))
-                            imgui.BeginChild("panel", imgui.ImVec2(320, 500), true)
-                                     
+                            imgui.BeginChild("panel", imgui.ImVec2(320, 520), true)
+                                local updatedConfig = dependencies.imguifunc:renderClickerPanel(self.storage)
+                                if updatedConfig then
+                                    updatedConfig:save_to_file(self.ConfigName, true, 2)
+                                end                                     
                             imgui.EndChild()
                         imgui.End()
                     end)
@@ -119,6 +136,71 @@ local render = MoonCore.class("render", {
                 end
             )
         end,
+        _updateClickerTimer = function(self)
+            local settings = self.storage:get("window.clickerSettings")
+            
+            if settings.isClicking[0] then
+                local currentTime = os.clock() * 1000
+                local remainingTime = math.max(0, settings.clickMainInterval - (currentTime % settings.clickMainInterval))
+                settings.currentTime = math.floor(remainingTime)
+                
+                if remainingTime < 10 and settings.clickCount > 0 then
+                    self:_performClicks(settings.clickCount, settings.clickInterval, settings.clickButton)
+                end
+                
+                if settings.timerEndTime > 0 and os.time() >= settings.timerEndTime then
+                    settings.isClicking[0] = false
+                    settings.timerEndTime = 0
+                    self.storage:save_to_file(self.ConfigName, true, 2)
+                end
+            else
+                settings.currentTime = 0
+            end
+        end,
+        _performClicks = function(self, count, interval, button)
+            local settings = self.storage:get("window.clickerSettings")
+            if not settings.isActivated[0] then return end
+            
+            lua_thread.create(function()
+                for i = 1, count do
+                    if not settings.isClicking[0] then break end
+                    
+                    -- Выполняем клик
+                    if button == 0 then
+                        -- Левая кнопка мыши
+                        setGameKeyState(1, 255) -- Нажатие
+                        wait(10)
+                        setGameKeyState(1, 0) -- Отпускание
+                    elseif button == 1 then
+                        -- Правая кнопка мыши
+                        setGameKeyState(2, 255) -- Нажатие
+                        wait(10)
+                        setGameKeyState(2, 0) -- Отпускание
+                    elseif button == 2 then
+                        -- Средняя кнопка мыши
+                        setGameKeyState(4, 255) -- Нажатие
+                        wait(10)
+                        setGameKeyState(4, 0) -- Отпускание
+                    end
+                    
+                    -- Ждем указанный интервал между кликами
+                    wait(interval)
+                end
+            end)
+        end,
+        StartClickerWithTimer = function(self, minutes)
+            local settings = self.storage:get("window.clickerSettings")
+            settings.isClicking[0] = true
+            settings.isActivated[0] = true
+            settings.timerEndTime = os.time() + (minutes * 60)
+            self.storage:save_to_file(self.ConfigName, true, 2)
+        end,
+        StopClicker = function(self)
+            local settings = self.storage:get("window.clickerSettings")
+            settings.isClicking[0] = false
+            settings.timerEndTime = 0
+            self.storage:save_to_file(self.ConfigName, true, 2)
+        end
     }
 })
 
