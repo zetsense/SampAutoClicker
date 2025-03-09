@@ -1,0 +1,13 @@
+{
+  "window":{
+    "show":{
+      "__type":"bool",
+      "value":false
+    },
+    "clickerSettings":{
+      "clickButton":0,
+      "clickInterval":20,
+      "clickMainInterval":100
+    }
+  }
+}
